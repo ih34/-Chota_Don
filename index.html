@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meesho Rozana prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f3eaf0;--ink:#1f1f1f;--muted:#5c5c5c;--panel:#ffffff;--line:#e6e6e6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1c1219;--ink:#f3f3f3;--muted:#c2b3bd;--panel:#2a1d26;--line:#3d2c38}}
+:root[data-theme="dark"]{--bg:#1c1219;--ink:#f3f3f3;--muted:#c2b3bd;--panel:#2a1d26;--line:#3d2c38}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Mulish',sans-serif;display:flex;flex-direction:column;align-items:center}
+a{color:#9f2089}a:hover{color:#580a46}
+button,input,textarea,select{font-family:inherit}
+.top,.journey,.hint{display:none}
+.phone{width:100%;max-width:430px;height:calc(100% - 44px);background:#fff;color:#1f1f1f;overflow:hidden;position:relative;flex-shrink:0;display:flex;flex-direction:column;box-shadow:0 0 0 1px var(--line)}
+.demo{width:100%;max-width:430px;height:44px;box-sizing:border-box;display:flex;gap:6px;justify-content:center;align-items:center;padding:6px 8px;background:var(--panel);border-top:1px solid var(--line)}
+.demo button{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:6px;padding:0 10px;font-size:11px;font-weight:600;cursor:pointer;height:30px;white-space:nowrap}
+.demo button.danger{color:#c33;border-color:#e0a3a3}
+}
+.scr{flex-grow:1;display:flex;flex-direction:column;min-height:0;background:#fff;color:#1f1f1f;font-family:'Mulish',sans-serif}
+.body{flex-grow:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding:14px 16px;box-sizing:border-box}
+.hdr{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e6e6e6;flex-shrink:0}
+.hdr .t{flex-grow:1;font-size:16px;font-weight:700}
+.hdr .sub{font-size:11px;color:#5c5c5c}
+.ib{width:40px;height:40px;border:1px solid #dedede;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;color:#1f1f1f}
+.ib .n{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:999px;background:#9f2089;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box}
+.logo{width:40px;height:40px;border-radius:9px;object-fit:cover}
+.tabs{display:flex;align-items:flex-end;gap:18px;padding:0 16px;border-bottom:1px solid #cfcfcf;height:44px;box-sizing:border-box;font-size:14px;flex-shrink:0}
+.tabs div{padding-bottom:10px;color:#5c5c5c}
+.tabs .on{display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:3px solid #9f2089;font-weight:700;color:#1f1f1f;cursor:pointer}
+.chip{font-size:10px;padding:2px 7px;border:1px solid #9f2089;border-radius:999px;color:#9f2089;background:#fce9f5;font-weight:600;white-space:nowrap}
+.chipg{font-size:10px;padding:2px 7px;border:1px solid #8a8a8a;border-radius:999px;color:#3d3d3d;white-space:nowrap}
+.chipy{font-size:10px;padding:2px 7px;border:1px solid #ff9d00;border-radius:999px;color:#7a4a00;background:#fff6e5;font-weight:600;white-space:nowrap}
+.img{display:flex;align-items:center;justify-content:center;background:#ededed;border:1px dashed #8a8a8a;border-radius:6px;font-size:10px;color:#5c5c5c;flex-shrink:0;text-align:center}
+.btn{display:flex;align-items:center;justify-content:center;height:48px;border-radius:8px;background:#9f2089;color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;width:100%;padding:0 16px;box-sizing:border-box;gap:8px}
+.btn:disabled{background:#c9c9c9;cursor:not-allowed}
+.btn.o{background:#fff;color:#9f2089;border:1px solid #9f2089}
+.btn.s{height:40px;font-size:13px}
+.card{border:1px solid #dedede;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.card.p{border-color:#9f2089}
+.row{display:flex;align-items:center;gap:10px}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid #cfcfcf;background:#fce9f5;flex-shrink:0}
+.strip div{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 4px;font-size:11px;font-weight:600;text-align:center}
+.strip div+div{border-left:1px solid #e3c9db}
+.step{display:flex;align-items:center;border:1px solid #9f2089;border-radius:6px;overflow:hidden;height:34px;flex-shrink:0}
+.step button{width:34px;height:34px;border:none;background:#fff;color:#9f2089;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.step span{width:28px;text-align:center;font-size:13px;font-weight:700;background:#fce9f5;height:34px;display:flex;align-items:center;justify-content:center}
+.add{height:34px;padding:0 12px;border:1px solid #9f2089;border-radius:6px;background:#fff;color:#9f2089;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+.foot{padding:12px 16px 16px;border-top:1px solid #e6e6e6;display:flex;flex-direction:column;gap:8px;flex-shrink:0;background:#fff}
+.nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #e6e6e6;height:60px;flex-shrink:0;background:#fff}
+.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:#5c5c5c;background:none;border:none;cursor:pointer}
+.nav button.on{color:#9f2089;font-weight:700}
+.note{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px dashed #ff9d00;background:#fff6e5;border-radius:8px;font-size:12px}
+.note.g{border-color:#c9c9c9;background:#f6f6f6;color:#5c5c5c;border-style:dashed}
+.pay{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border:1px solid #cfcfcf;border-radius:8px;font-size:13px;box-sizing:border-box;cursor:pointer}
+.pay.on{border-color:#9f2089;background:#fce9f5}
+.tl{display:flex;gap:12px;min-height:46px}
+.tl .d{display:flex;flex-direction:column;align-items:center}
+.tl .dot{width:14px;height:14px;border-radius:999px;background:#9f2089;flex-shrink:0}
+.tl .dot.now{background:#fff;border:3px solid #9f2089;box-sizing:border-box}
+.tl .dot.todo{background:#fff;border:2px solid #8a8a8a;box-sizing:border-box}
+.tl .ln{flex-grow:1;width:2px;background:#9f2089}
+.tl .ln.todo{background:#cfcfcf}
+.toast{position:absolute;left:16px;right:16px;bottom:72px;background:#1f1f1f;color:#fff;font-size:12px;padding:10px 12px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pc{display:flex;flex-direction:column;gap:6px;padding:8px;border:1px solid #dedede;border-radius:8px;background:#fff}
+.ok{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#e8f5ec;color:#1d7a3e;border-radius:8px;font-size:12px;font-weight:600}
+.small{font-size:12px;color:#3d3d3d}
+.h2{font-size:15px;font-weight:700}
+.tick{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #dedede;border-radius:8px;cursor:pointer}
+.tick.on{border-color:#9f2089;background:#fdf6fb}
+.cb{width:22px;height:22px;border-radius:6px;border:2px solid #9f2089;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;color:#fff}
+.tick.on .cb{background:#9f2089}
+.opt{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #dedede;border-radius:8px;cursor:pointer}
+.opt.on{border-color:#9f2089;background:#fdf6fb}
+.rd{width:18px;height:18px;border-radius:999px;border:2px solid #9f2089;box-sizing:border-box;flex-shrink:0;background:#fff}
+.opt.on .rd{background:#9f2089;box-shadow:inset 0 0 0 3px #fff}
+.seg{display:flex;border:1px solid #9f2089;border-radius:8px;overflow:hidden}
+.seg button{flex:1;height:36px;border:none;background:#fff;color:#9f2089;font-size:12px;font-weight:700;cursor:pointer}
+.seg button.on{background:#9f2089;color:#fff}
+.in{height:44px;border:1px solid #cfcfcf;border-radius:8px;padding:0 12px;font-size:14px;box-sizing:border-box;width:100%}
+.ta{border:1px solid #cfcfcf;border-radius:8px;padding:10px 12px;font-size:13px;box-sizing:border-box;width:100%;min-height:120px;resize:vertical;line-height:1.5}
+.photo{height:180px;border:2px dashed #9f2089;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#9f2089;cursor:pointer;background:#fdf6fb;position:relative;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.sav{color:#1d7a3e;font-weight:700}
+.mrp{color:#8a8a8a;text-decoration:line-through}
+.sh{font-size:11px;color:#5c5c5c}
+.bar{height:6px;background:#fce9f5;border-radius:999px;overflow:hidden}
+.bar div{height:100%;background:#9f2089;width:0;transition:width 1.1s ease}
+
+</style>
+</head>
+<body>
+<div class="top"><h1>Meesho Rozana · customer walkthrough</h1><div id="visit" style="font-size:12px;color:var(--muted)"></div></div>
+<div class="journey" id="journey"></div>
+<div class="hint" id="hint"></div>
+<div class="phone"><div class="scr" id="app"></div><div class="toast" id="toast"></div></div>
+<div class="demo">
+  <button data-demo="deliver">Demo: delivered</button>
+  <button data-demo="days">Demo: +26 days</button>
+  <button data-demo="reset" class="danger">Reset</button>
+</div>
+<script>window.ROZANA_LOGO="data:image/png;base64,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";
+(function(global){
+var LOGO = global.ROZANA_LOGO || "";
+var DAY = 86400000, KEY = 'rozana-proto-v3';
+
+/* ---------------- data ---------------- */
+var SHOPS = {
+  gupta:  {name:'Meesho Mall',          dist:'Mall verified · 4.3 ★'},
+  sharma: {name:'Everyday Essentials Co', dist:'Verified seller · 4.2 ★'},
+  verma:  {name:'Budget Basket Store',  dist:'Verified seller · 4.1 ★'},
+  agarwal:{name:'Stationery Hub',       dist:'Verified seller · 4.2 ★'}
+};
+/* cat: home | bath | school | addon.  need: the generic thing a list line asks for. opts: [seller, price] offers already live on Meesho */
+var CATALOG = [
+  {id:'tp1',  cat:'home',  need:'toothpaste', name:'Toothpaste, 150 g',               mrp:110, opts:[['gupta',95],['sharma',99]], tag:'toothpaste'},
+  {id:'tp2',  cat:'home',  need:'toothpaste', name:'Herbal toothpaste, 100 g',        mrp:75,  opts:[['verma',69]], tag:'toothpaste'},
+  {id:'det1', cat:'home',  need:'detergent',  name:'Detergent powder, 1 kg',          mrp:120, opts:[['sharma',105],['gupta',110]], tag:'detergent'},
+  {id:'det2', cat:'home',  need:'detergent',  name:'Detergent bar, pack of 4',        mrp:60,  opts:[['verma',52]], tag:'detergent'},
+  {id:'soap', cat:'home',  need:'soap',       name:'Bathing soap, 4 × 100 g',         mrp:120, opts:[['gupta',104],['verma',108]], tag:'soap'},
+  {id:'soap2',cat:'home',  need:'soap',       name:'Neem soap, 3 × 75 g',             mrp:90,  opts:[['sharma',82]], tag:'soap'},
+  {id:'floor',cat:'home',  need:'floor',      name:'Floor cleaner, 1 L',              mrp:199, opts:[['sharma',165]], tag:'cleaner'},
+  {id:'tea',  cat:'home',  need:'tea',        name:'Tea, 500 g',                      mrp:260, opts:[['gupta',235],['verma',240]], tag:'tea'},
+  {id:'oil',  cat:'bath',  need:'hairoil',    name:'Coconut hair oil, 200 ml',        mrp:120, opts:[['gupta',92],['sharma',96]], tag:'hair oil'},
+  {id:'oil2', cat:'bath',  need:'hairoil',    name:'Amla hair oil, 200 ml',           mrp:95,  opts:[['verma',79]], tag:'hair oil'},
+  {id:'sham', cat:'bath',  need:'shampoo',    name:'Anti-dandruff shampoo, 180 ml',   mrp:199, opts:[['sharma',165],['gupta',172]], tag:'shampoo'},
+  {id:'sham2',cat:'bath',  need:'shampoo',    name:'Shampoo sachets, pack of 16',     mrp:48,  opts:[['verma',45]], tag:'shampoo'},
+  {id:'razor',cat:'bath',  need:'razor',      name:'Razor + 4 blades',                mrp:65,  opts:[['gupta',49]], tag:'razor'},
+  {id:'wash', cat:'bath',  need:'facewash',   name:'Charcoal face wash, 100 ml',      mrp:99,  opts:[['sharma',79]], tag:'face wash'},
+  {id:'deo',  cat:'bath',  need:'deo',        name:'Deodorant, 150 ml',               mrp:199, opts:[['gupta',149]], tag:'deo'},
+  {id:'nb',   cat:'school',need:'notebook',   name:'Long notebook, 172 pages',        mrp:60,  opts:[['agarwal',48]], tag:'notebook'},
+  {id:'nb2',  cat:'school',need:'notebook',   name:'Ruled notebook, 240 pages',       mrp:90,  opts:[['agarwal',78]], tag:'notebook'},
+  {id:'pen',  cat:'school',need:'pen',        name:'Ball pens, pack of 10',           mrp:50,  opts:[['agarwal',40]], tag:'pens'},
+  {id:'geo',  cat:'school',need:'geometry',   name:'Geometry box',                    mrp:150, opts:[['agarwal',120]], tag:'geometry'},
+  {id:'org',  cat:'addon', need:'',           name:'Bathroom bottle organiser',       mrp:149, opts:[['verma',129]], tag:'organiser'},
+  {id:'pcase',cat:'addon', need:'',           name:'Pencil case',                     mrp:99,  opts:[['agarwal',69]], tag:'pencil case'}
+];
+var BY = {}; CATALOG.forEach(function(p){BY[p.id]=p;});
+var CATS = {home:'Home essentials', bath:'Bath & grooming', school:'School & stationery', addon:'Add-ons'};
+var STARTERS = [
+  {id:'st-bath',  name:'Monthly Bath & Grooming', cadence:'monthly', items:['oil','sham','razor','wash','deo'], who:'Sunil, 38 · household restock'},
+  {id:'st-home',  name:'Household Monthly Restock', cadence:'monthly', items:['tp1','det1','soap','floor','tea','oil','sham'], who:'Sunil, 38 · one trip to four shops'},
+  {id:'st-hostel',name:'Hostel Starter', cadence:'monthly', items:['tp1','soap','sham2','det2','razor','nb','pen'], who:'Ravi, 21 · first job, tight budget'},
+  {id:'st-school',name:'School & Stationery', cadence:'weekly', items:['nb','nb2','pen','geo'], who:'Kids going back to school'}
+];
+/* what the sample handwritten list says, and how the matcher reads it */
+var SAMPLE_LINES = ['Toothpaste','Hair oil (nariyal)','Shampoo','Surf 1 kg','Nahane ka sabun','2 notebooks','Pen','Toor dal 2 kg','Atta 10 kg','Agarbatti'];
+var LEXICON = [
+  [/tooth|paste|manjan/i,'toothpaste'],[/hair ?oil|tel|nariyal|coconut|amla/i,'hairoil'],[/shampoo|sachet/i,'shampoo'],
+  [/surf|detergent|washing powder|nirma|kapde/i,'detergent'],[/sabun|soap|nahane/i,'soap'],[/notebook|copy|register/i,'notebook'],
+  [/\bpen\b|pens|ball ?pen/i,'pen'],[/geometry|compass/i,'geometry'],[/floor|phenyl|cleaner/i,'floor'],[/\btea\b|chai|chaipatti/i,'tea'],
+  [/razor|blade|shav/i,'razor'],[/face ?wash/i,'facewash'],[/deo|spray/i,'deo']
+];
+var UNAVAIL_WHY = [[/dal|rice|chawal|atta|sugar|cheeni|oil 1l|loose/i,'Loose grocery is not on Meesho yet (no barcode, weekly price)'],[/.*/,'No seller lists this on Meesho yet']];
+
+/* ---------------- state ---------------- */
+function fresh(){
+  return {screen:'home', lists:[], activeList:null, basket:{}, snap:{stage:'idle', lines:[], picks:{}}, orders:[], offset:0, visits:0, payment:'cod', product:'oil', dismissed:{}, guardSeen:false, returnPick:{}};
+}
+var S;
+try{ S = JSON.parse(global.localStorage && localStorage.getItem(KEY)) || fresh(); }catch(e){ S = fresh(); }
+if(!S.basket || !S.snap) S = fresh();
+S.visits = (S.visits||0)+1;
+var PHOTO = null; /* kept out of storage */
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function now(){ return Date.now()+(S.offset||0); }
+function fmt(t){ return new Date(t).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
+function money(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); }
+
+/* ---------------- derived ---------------- */
+function best(p){ return p.opts.slice().sort(function(a,b){return a[1]-b[1];})[0]; }
+function price(p,shop){ var o=p.opts.filter(function(x){return x[0]===shop;})[0]||best(p); return o[1]; }
+function shopOf(id){ var b=S.basket[id]; return b&&b.shop||best(BY[id])[0]; }
+function items(){ return Object.keys(S.basket).filter(function(id){return S.basket[id].q>0;}).map(function(id){return {p:BY[id],q:S.basket[id].q,shop:shopOf(id),price:price(BY[id],shopOf(id))};}); }
+function count(){ return items().reduce(function(a,x){return a+x.q;},0); }
+function subtotal(){ return items().reduce(function(a,x){return a+x.price*x.q;},0); }
+function savings(){ return items().reduce(function(a,x){return a+(x.p.mrp-x.price)*x.q;},0); }
+function shopsInCart(){ var s={}; items().forEach(function(x){s[x.shop]=1;}); return Object.keys(s); }
+function activeList(){ return S.lists.filter(function(l){return l.id===S.activeList;})[0] || S.lists[0] || null; }
+function ticked(l){ return l? l.items.filter(function(i){return i.on;}) : []; }
+function missingFromCart(){ var l=activeList(); return ticked(l).filter(function(i){return !(S.basket[i.id]&&S.basket[i.id].q>0);}); }
+function addons(){
+  var its=items(), out=[];
+  var bath=its.filter(function(x){return x.p.cat==='bath';}).length, school=its.some(function(x){return x.p.cat==='school';});
+  if(bath>=3 && !S.basket.org && !S.dismissed.org) out.push(BY.org);
+  if(school && !S.basket.pcase && !S.dismissed.pcase) out.push(BY.pcase);
+  return out.slice(0,2);
+}
+function nextRozanaDay(){ var t=new Date(now()); t.setHours(0,0,0,0); return t.getTime()+3*DAY; }
+function cutoff(){ return now(); }
+function lastOrder(){ return S.orders.length? S.orders[S.orders.length-1]:null; }
+function status(o){
+  if(o.delivered) return 4;
+  var d=(now()-o.placedAt)/DAY;
+  if(d>=3.2){ o.delivered=true; o.deliveredAt=o.rozanaDay+11*3600000; return 4; }
+  if(d>=2.5) return 3; if(d>=1.2) return 2; if(d>=0.5) return 1; return 0;
+}
+function daysSince(o){ return Math.floor((now()-(o.deliveredAt||o.placedAt))/DAY); }
+function due(){ var o=lastOrder(), l=activeList(); if(!o) return false; var c=(l&&l.cadence==='weekly')?5:23; return daysSince(o)>=c; }
+function stage(){
+  var o=lastOrder();
+  if(!o) return S.lists.length? 1:0;
+  if(status(o)<4) return 2;
+  if(S.orders.length>=2) return 5;
+  return due()? 4:3;
+}
+function matchLine(line){
+  var need=null; LEXICON.forEach(function(x){ if(!need && x[0].test(line)) need=x[1]; });
+  var qty=(line.match(/(\d+)\s*(notebook|copy|pen|sabun|soap)/i)||[])[1]; qty=qty?parseInt(qty,10):1;
+  if(!need) return {line:line, qty:1, options:[], why:UNAVAIL_WHY.filter(function(w){return w[0].test(line);})[0][1]};
+  var opts=CATALOG.filter(function(p){return p.need===need;}).sort(function(a,b){return price(a)-price(b);}).slice(0,3);
+  return {line:line, qty:qty, need:need, options:opts.map(function(p){return p.id;})};
+}
+
+/* ---------------- icons ---------------- */
+var I = {
+  search:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>',
+  cart:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2 12h11l2-8H6"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="17" cy="20" r="1.5"></circle></svg>',
+  back:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"></path></svg>',
+  shield:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>',
+  truck:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="1.5"></circle><circle cx="17" cy="18" r="1.5"></circle></svg>',
+  ret:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 2.3-5.7"></path><path d="M4 4v5h5"></path></svg>',
+  check:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M8 12l3 3 5-6"></path></svg>',
+  tickm:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"></path></svg>',
+  pin:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>',
+  bell:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg>',
+  home:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"></path></svg>',
+  list:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 12l2 2 3-3M4 18l2 2 3-3M12 7h9M12 13h9M12 19h9"></path></svg>',
+  shop:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1.5-5h15L21 9M3 9h18v11H3zM9 20v-6h6v6"></path></svg>',
+  box:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><path d="M3 7l9 4 9-4M12 11v10"></path></svg>',
+  user:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>',
+  cam:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>',
+  spark:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"></path></svg>',
+  cal:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>',
+  x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"></path></svg>'
+};
+
+/* ---------------- pieces ---------------- */
+function logo(sz){ return LOGO? '<img class="logo" style="width:'+(sz||40)+'px;height:'+(sz||40)+'px" src="'+LOGO+'" alt="Meesho">':'<div class="img" style="width:'+(sz||40)+'px;height:'+(sz||40)+'px;border-radius:9px">logo</div>'; }
+function cartBtn(){ var c=count(); return '<button class="ib" data-go="checkout" aria-label="Cart">'+I.cart+(c?'<span class="n">'+c+'</span>':'')+'</button>'; }
+function nav(on){
+  function b(id,ic,l){return '<button data-go="'+id+'" class="'+(on===id?'on':'')+'">'+ic+l+'</button>';}
+  return '<div class="nav">'+b('home',I.home,'Home')+b('lists',I.list,'My lists')+b('shop',I.shop,'Shop')+b('orders',I.box,'Orders')+'</div>';
+}
+function stepper(p){
+  var q=S.basket[p.id]&&S.basket[p.id].q||0;
+  if(!q) return '<button class="add" data-add="'+p.id+'">Add</button>';
+  return '<div class="step"><button data-dec="'+p.id+'" aria-label="Remove one">−</button><span>'+q+'</span><button data-inc="'+p.id+'" aria-label="Add one">+</button></div>';
+}
+function priceLine(p,shop){ var pr=price(p,shop), sh=SHOPS[shop||best(p)[0]]; return '<div class="row" style="gap:6px;align-items:baseline;flex-wrap:wrap"><b style="font-size:14px">'+money(pr)+'</b><span class="mrp" style="font-size:11px">MRP '+money(p.mrp)+'</span>'+(p.mrp>pr?'<span class="sav" style="font-size:11px">save '+money(p.mrp-pr)+'</span>':'')+'</div><div class="sh">'+sh.name+' · '+sh.dist+'</div>'; }
+function itemRow(p){
+  return '<div class="row" style="padding:10px;border:1px solid #dedede;border-radius:10px;align-items:flex-start"><div class="img" style="width:56px;height:56px" data-open="'+p.id+'">'+p.tag+'</div>'
+    +'<div style="flex-grow:1;display:flex;flex-direction:column;gap:3px;cursor:pointer" data-open="'+p.id+'"><div style="font-size:13px;font-weight:700">'+p.name+'</div><div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip">Below MRP</span><span class="chipg">'+CATS[p.cat]+'</span></div>'+priceLine(p,shopOf(p.id))+'</div>'+stepper(p)+'</div>';
+}
+function rozanaStrip(){ return '<div class="strip"><div>'+I.shield+'Mall verified sellers</div><div>'+I.truck+'Delivery by '+fmt(nextRozanaDay())+'</div><div>'+I.ret+'7-day easy returns</div></div>'; }
+function addonBlock(){
+  var a=addons(); if(!a.length) return '';
+  return '<div style="display:flex;flex-direction:column;gap:6px"><div class="row" style="gap:6px"><span style="color:#9f2089">'+I.spark+'</span><b style="font-size:13px">Smart add-ons</b><span class="chipg">max 2 · never above your list</span></div>'
+    +a.map(function(p){return '<div class="row" style="padding:8px 10px;border:1px dashed #9f2089;border-radius:8px"><div class="img" style="width:44px;height:44px">'+p.tag+'</div><div style="flex-grow:1;font-size:12px"><b>'+p.name+'</b><div class="sh">Similar baskets add this · '+money(price(p))+' <span class="mrp">MRP '+money(p.mrp)+'</span></div></div><button class="add" data-add="'+p.id+'">Add</button><button class="ib" style="width:34px;height:34px" data-dismiss="'+p.id+'" aria-label="Remove suggestion">'+I.x+'</button></div>';}).join('')+'</div>';
+}
+
+/* ---------------- screens ---------------- */
+var V = {};
+V.home = function(){
+  var o=lastOrder(), l=activeList(), st=stage();
+  var hero;
+  if(o && due()) hero='<div class="card" style="background:#580a46;color:#fff;border:none"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#ff9d00">ROZANA · REFILL DUE</div><div style="font-size:20px;font-weight:700">Welcome back, Sunil</div><div style="font-size:12px;color:#f3dcec">Your "'+(l?l.name:'routine')+'" list is '+daysSince(o)+' days old. Reorder now and it arrives by '+fmt(nextRozanaDay())+'.</div><button class="btn" style="background:#fff;color:#9f2089" data-reorder="1">Reorder my list in one tap</button></div>';
+  else if(o) hero='<div class="card" style="background:#580a46;color:#fff;border:none"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#ff9d00">ROZANA</div><div style="font-size:20px;font-weight:700">'+(status(o)<4?'Your order is on its way':'Delivered on time')+'</div><div style="font-size:12px;color:#f3dcec">'+(status(o)<4?o.items.length+' items from '+o.shops.length+' seller'+(o.shops.length>1?'s':'')+', delivery by '+fmt(o.rozanaDay)+' with Valmo.':'We will remind you before anything runs out. Easy returns for 7 days.')+'</div><button class="btn" style="background:#fff;color:#9f2089" data-go="orders">'+(status(o)<4?'Track my order':'See my order')+'</button></div>';
+  else hero='<div class="card" style="background:#580a46;color:#fff;border:none"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#ff9d00">MEESHO ROZANA</div><div style="font-size:20px;font-weight:700;line-height:1.2">The month\'s restock, done in one go</div><div style="font-size:12px;color:#f3dcec;line-height:1.4">Make your list once. Meesho matches every item at prices below MRP, delivers in 2 to 3 days, and reminds you before anything runs out. Easy returns, cash on delivery.</div>'
+    +'<div class="row" style="gap:8px;margin-top:4px"><button class="btn" style="background:#fff;color:#9f2089;height:44px;flex:1" data-go="lists">'+I.list+'Make my list</button><button class="btn" style="background:#ff9d00;color:#1f1f1f;height:44px;flex:1" data-go="snap">'+I.cam+'Snap a list</button></div></div>';
+  var tiles=['home','bath','school'].map(function(c){return '<div class="pc" style="cursor:pointer;align-items:center;text-align:center" data-cat="'+c+'"><div class="img" style="height:64px;width:100%">'+c+'</div><div style="font-size:12px;font-weight:600">'+CATS[c]+'</div></div>';}).join('');
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px"><div class="row" style="gap:8px">'+logo(40)+'<span style="font-size:18px;font-weight:700;color:#9f2089">meesho</span></div><div class="row" style="gap:8px"><div class="row" style="gap:4px;font-size:12px;color:#4d4d4d">'+I.pin+'Dharampeth, Nagpur</div><button class="ib" data-go="account" aria-label="Account">'+I.user+'</button></div></div>'
+    +'<div class="hdr" style="padding-top:8px"><div class="row" style="flex-grow:1;height:40px;padding:0 12px;border:1px solid #dedede;border-radius:8px;box-sizing:border-box;gap:8px">'+I.search+'<span style="font-size:13px;color:#5c5c5c">Search essentials near you</span></div>'+cartBtn()+'</div>'
+    +'<div class="tabs"><div>For You</div><div>Women</div><div>Men</div><div>Beauty</div><div class="on" data-go="shop">Rozana <span style="font-size:10px;padding:2px 6px;border-radius:999px;background:#9f2089;color:#fff">NEW</span></div></div>'
+    +'<div class="body">'+hero
+    +(st===1 && l ? '<div class="note" style="border-color:#9f2089;background:#fdf6fb">'+I.list+'<span style="flex-grow:1"><b>'+l.name+'</b> · '+ticked(l).length+' of '+l.items.length+' ticked</span><button class="add" data-golist="'+l.id+'">Open</button></div>':'')
+    +'<div class="h2">Shop by what the month needs</div><div class="grid3">'+tiles+'</div>'
+    +'<div class="h2" style="font-size:13px">Start from a ready list</div><div style="display:flex;flex-direction:column;gap:8px">'+STARTERS.slice(0,3).map(function(s){return '<div class="row" style="padding:10px 12px;border:1px solid #dedede;border-radius:8px;cursor:pointer" data-starter="'+s.id+'"><div style="flex-grow:1"><b style="font-size:13px">'+s.name+'</b><div class="sh">'+s.items.length+' items · '+s.cadence+' · '+s.who+'</div></div><span style="color:#9f2089;font-weight:700;font-size:12px">Use</span></div>';}).join('')+'</div>'
+    +'<div class="strip" style="border:1px solid #dedede;border-radius:10px;background:#fff"><div>'+I.shield+'Mall verified sellers</div><div>'+I.truck+'Delivery date shown upfront</div><div>'+I.ret+'7-day easy returns</div></div>'
+    +'</div>'+nav('home');
+};
+
+V.lists = function(){
+  var mine=S.lists.length? S.lists.map(function(l){var t=ticked(l).length;return '<div class="card p" style="cursor:pointer" data-golist="'+l.id+'"><div class="row" style="justify-content:space-between"><b style="font-size:14px">'+l.name+'</b><span class="chip">'+l.cadence+'</span></div><div class="sh">'+t+' of '+l.items.length+' ticked to buy this time'+(l.id===S.activeList?' · active':'')+'</div><div class="bar"><div style="width:'+(l.items.length?Math.round(100*t/l.items.length):0)+'%"></div></div></div>';}).join('')
+    : '<div class="note g">'+I.list+'<span>No list yet. Start from a ready list below, build one from scratch, or photograph the paper one on your fridge.</span></div>';
+  return '<div class="hdr">'+logo(36)+'<div class="t">My Rozana lists</div>'+cartBtn()+'</div>'
+    +'<div class="body">'
+    +'<div class="row" style="gap:8px"><button class="btn s" data-newlist="1" style="flex:1">'+I.list+'New list</button><button class="btn s o" data-go="snap" style="flex:1">'+I.cam+'Snap-a-List</button></div>'
+    +'<div class="h2" style="font-size:13px">Your lists</div>'+mine
+    +'<div class="h2" style="font-size:13px">Ready lists</div><div style="display:flex;flex-direction:column;gap:8px">'+STARTERS.map(function(s){return '<div class="row" style="padding:10px 12px;border:1px solid #dedede;border-radius:8px"><div style="flex-grow:1"><b style="font-size:13px">'+s.name+'</b><div class="sh">'+s.items.map(function(id){return BY[id].tag;}).join(', ')+'</div></div><button class="add" data-starter="'+s.id+'">Use</button></div>';}).join('')+'</div>'
+    +'</div>'+nav('lists');
+};
+
+V.list = function(){
+  var l=activeList(); if(!l) return V.lists();
+  var t=ticked(l), total=t.reduce(function(a,i){return a+price(BY[i.id])*(i.q||1);},0), mrp=t.reduce(function(a,i){return a+BY[i.id].mrp*(i.q||1);},0);
+  var rows=l.items.map(function(i){var p=BY[i.id]; return '<div class="tick '+(i.on?'on':'')+'" data-tick="'+i.id+'"><div class="cb">'+I.tickm+'</div><div class="img" style="width:40px;height:40px;font-size:9px">'+p.tag+'</div><div style="flex-grow:1"><div style="font-size:13px;font-weight:600;'+(i.on?'':'color:#8a8a8a')+'">'+p.name+(i.q>1?' × '+i.q:'')+'</div><div class="sh">'+money(price(p))+' <span class="mrp">MRP '+money(p.mrp)+'</span> · '+SHOPS[best(p)[0]].name+'</div></div><button class="ib" style="width:30px;height:30px;border:none" data-rmlist="'+i.id+'" aria-label="Remove from list">'+I.x+'</button></div>';}).join('');
+  var addable=CATALOG.filter(function(p){return p.cat!=='addon' && !l.items.some(function(i){return i.id===p.id;});}).slice(0,6);
+  return '<div class="hdr"><button class="ib" data-go="lists" aria-label="Back">'+I.back+'</button><div style="flex-grow:1"><input class="in" style="height:36px;font-weight:700;border:none;padding:0" value="'+l.name.replace(/"/g,'&quot;')+'" data-rename="1" aria-label="List name"><div class="sub">Tick what you need this time · untick what you still have</div></div>'+cartBtn()+'</div>'
+    +'<div style="padding:10px 16px;border-bottom:1px solid #e6e6e6;display:flex;gap:10px;align-items:center"><span class="sh">Remind me</span><div class="seg" style="flex-grow:1"><button data-cad="weekly" class="'+(l.cadence==='weekly'?'on':'')+'">Weekly</button><button data-cad="monthly" class="'+(l.cadence==='monthly'?'on':'')+'">Monthly</button></div></div>'
+    +'<div class="body">'
+    +'<div class="row" style="justify-content:space-between"><span class="small">'+t.length+' of '+l.items.length+' ticked</span><span style="font-size:12px;text-decoration:underline;cursor:pointer" data-tickall="'+(t.length===l.items.length?'0':'1')+'">'+(t.length===l.items.length?'Untick all':'Tick all')+'</span></div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px">'+(rows||'<div class="note g">Empty list. Add items below or snap a photo.</div>')+'</div>'
+    +'<div class="row" style="gap:8px"><button class="btn s o" data-go="snap" style="flex:1">'+I.cam+'Snap a paper list</button><button class="btn s o" data-go="shop" style="flex:1">'+I.shop+'Browse to add</button></div>'
+    +'<div class="h2" style="font-size:13px">Quick add</div><div class="grid3">'+addable.map(function(p){return '<div class="pc" style="cursor:pointer" data-addlist="'+p.id+'"><div class="img" style="height:48px">'+p.tag+'</div><div style="font-size:11px;line-height:1.3">'+p.name+'</div><div style="font-size:11px;font-weight:700;color:#9f2089">+ Add to list</div></div>';}).join('')+'</div>'
+    +'</div>'
+    +'<div class="foot"><div class="row" style="justify-content:space-between;font-size:12px"><span>Ticked items: <b>'+money(total)+'</b> <span class="mrp">MRP '+money(mrp)+'</span></span><span class="sav">you save '+money(mrp-total)+'</span></div><button class="btn" data-listtocart="1" '+(t.length?'':'disabled')+'>'+(t.length?'Add '+t.length+' ticked to cart':'Tick something to buy')+'</button></div>';
+};
+
+V.snap = function(){
+  var sn=S.snap, head='<div class="hdr"><button class="ib" data-go="lists" aria-label="Back">'+I.back+'</button><div style="flex-grow:1"><div class="t">Snap-a-List</div><div class="sub">Photograph the paper list. We read it and match each line to products on Meesho.</div></div></div>';
+  if(sn.stage==='idle' || sn.stage==='photo'){
+    return head+'<div class="body">'
+      +'<div class="photo">'+(PHOTO?'<img src="'+PHOTO+'" alt="Your list">':I.cam+'<div style="font-size:13px;font-weight:700">Tap to take a photo or upload</div><div class="sh">Handwritten or printed · Hindi, English or regional</div>')+'<input type="file" accept="image/*" capture="environment" data-photo="1" aria-label="Upload list photo"></div>'
+      +(PHOTO?'<button class="btn" data-read="1">'+I.spark+'Read my list</button>':'<button class="btn o" data-sample="1">No list handy? Use a sample photo</button>')
+      +'<div class="note g">'+I.spark+'<span>In this prototype the text recognition is simulated: the sample list stands in for what the OCR model would read off your photo. Everything after that step (matching, prices, availability) runs for real on the catalogue.</span></div>'
+      +'<div class="card"><b style="font-size:13px">How it works</b><div class="small">1. Snap the list. 2. We read every line. 3. Each line gets two or three matching products with the Meesho price against MRP. 4. You pick one per line. Nothing enters the cart unconfirmed. 5. Lines nothing matches go to a separate "not available" list.</div></div>'
+      +'</div>'+nav('lists');
+  }
+  if(sn.stage==='reading'){
+    return head+'<div class="body" style="justify-content:center;align-items:center;text-align:center;gap:14px"><div class="photo" style="width:100%;height:160px;cursor:default">'+(PHOTO?'<img src="'+PHOTO+'" alt="Your list" style="opacity:.6">':'<div class="img" style="width:100%;height:100%;border:none">sample list</div>')+'</div><div class="h2">Reading your list…</div><div class="bar" style="width:70%"><div id="readbar" style="width:10%"></div></div><div class="sh">Text recognition → catalogue match</div></div>'+nav('lists');
+  }
+  if(sn.stage==='lines'){
+    return head+'<div class="body"><div class="ok">'+I.check+'<span>Read '+sn.lines.length+' lines. Fix anything we misread, then match.</span></div>'
+      +'<textarea class="ta" data-lines="1" aria-label="Recognised lines">'+sn.lines.join('\n')+'</textarea>'
+      +'<div class="sh">One item per line. Quantities like "2 notebooks" are understood.</div></div>'
+      +'<div class="foot"><button class="btn" data-match="1">Match to products on Meesho</button><button class="btn o s" data-retake="1">Retake photo</button></div>';
+  }
+  /* results */
+  var res=sn.lines.map(matchLine), hits=res.filter(function(r){return r.options.length;}), miss=res.filter(function(r){return !r.options.length;});
+  var chosen=hits.filter(function(r){return sn.picks[r.line];}).length;
+  var cards=hits.map(function(r,ri){
+    return '<div class="card"><div class="row" style="justify-content:space-between"><b style="font-size:13px">“'+r.line+'”'+(r.qty>1?' × '+r.qty:'')+'</b><span class="chipg">'+r.options.length+' match'+(r.options.length>1?'es':'')+'</span></div>'
+      +r.options.map(function(id){var p=BY[id], on=sn.picks[r.line]===id; return '<div class="opt '+(on?'on':'')+'" data-pick="'+ri+'" data-sku="'+id+'"><div class="rd"></div><div class="img" style="width:40px;height:40px;font-size:9px">'+p.tag+'</div><div style="flex-grow:1"><div style="font-size:12px;font-weight:600">'+p.name+'</div><div class="row" style="gap:6px;align-items:baseline;flex-wrap:wrap"><b style="font-size:13px">'+money(price(p))+'</b><span class="mrp" style="font-size:11px">MRP '+money(p.mrp)+'</span><span class="sav" style="font-size:11px">save '+money(p.mrp-price(p))+'</span></div><div class="sh">'+SHOPS[best(p)[0]].name+' · '+SHOPS[best(p)[0]].dist+'</div></div></div>';}).join('')
+      +'</div>';
+  }).join('');
+  return head+'<div class="body">'
+    +'<div class="row" style="justify-content:space-between"><b style="font-size:13px">'+hits.length+' lines matched</b><span class="sh">'+chosen+' chosen · pick one per line</span></div>'+cards
+    +(miss.length?'<div class="card" style="border-color:#ff9d00;background:#fff6e5"><div class="row" style="gap:6px"><span style="color:#7a4a00">'+I.x+'</span><b style="font-size:13px">Not available on Meesho yet ('+miss.length+')</b></div>'+miss.map(function(r){return '<div style="font-size:12px;padding:6px 0;border-top:1px solid #f3dcb3"><b>'+r.line+'</b><div class="sh">'+r.why+'</div></div>';}).join('')+'<div class="sh">We keep this list as a demand signal for sellers, and tell you when it becomes available.</div></div>':'')
+    +'</div>'
+    +'<div class="foot"><div class="row" style="justify-content:space-between;font-size:12px"><span>Chosen so far</span><b>'+money(hits.reduce(function(a,r){return a+(sn.picks[r.line]?price(BY[sn.picks[r.line]])*r.qty:0);},0))+'</b></div><button class="btn" data-snapadd="1" '+(chosen?'':'disabled')+'>Add '+chosen+' to my list &amp; cart</button></div>';
+};
+
+V.shop = function(){
+  var c=S.cat||'bath';
+  var list=CATALOG.filter(function(p){return p.cat===c;});
+  return '<div class="hdr"><button class="ib" data-go="home" aria-label="Back">'+I.back+'</button>'+logo(36)+'<div style="flex-grow:1"><div class="sub" style="font-weight:700;letter-spacing:.08em">MEESHO ROZANA</div><div style="font-size:16px;font-weight:700">Everyday essentials</div></div>'+cartBtn()+'</div>'
+    +rozanaStrip()
+    +'<div class="tabs" style="height:40px">'+['home','bath','school'].map(function(k){return '<div class="'+(k===c?'on':'')+'" data-cat="'+k+'" style="cursor:pointer">'+CATS[k]+'</div>';}).join('')+'</div>'
+    +'<div class="body">'
+    +'<div class="sh">Replenishment essentials from Meesho Mall and verified sellers. Every price is shown against MRP so the saving is visible before you tap.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:10px">'+list.map(itemRow).join('')+'</div>'
+    +'<div class="note g">'+I.shield+'<span>Mall verified items carry brand authenticity checks, real customer photos and honest specs.</span></div>'
+    +'</div>'
+    +'<div class="foot"><button class="btn" data-go="checkout" '+(count()?'':'disabled')+'>'+(count()?'Go to cart · '+money(subtotal()):'Cart is empty')+'</button></div>'+nav('shop');
+};
+
+V.product = function(){
+  var p=BY[S.product]||BY.oil, cur=shopOf(p.id), q=S.basket[p.id]&&S.basket[p.id].q||0;
+  var alt=CATALOG.filter(function(x){return x.need===p.need && x.id!==p.id;});
+  return '<div class="hdr"><button class="ib" data-go="shop" aria-label="Back">'+I.back+'</button><div class="t" style="font-size:14px">'+CATS[p.cat]+'</div>'+cartBtn()+'</div>'
+    +'<div class="body" style="padding:0;gap:0">'
+    +'<div class="img" style="height:180px;border-radius:0;border-left:none;border-right:none;border-top:none;font-size:12px">'+p.tag+' image</div>'
+    +'<div style="display:flex;flex-direction:column;gap:12px;padding:14px 16px">'
+    +'<div><div style="font-size:17px;font-weight:700">'+p.name+'</div><div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px"><span class="chip">Below MRP</span><span class="chipg">MRP '+money(p.mrp)+'</span><span class="chipg">1,204 ratings</span></div></div>'
+    +'<div><b style="font-size:13px">Pick the seller</b><div class="sh" style="margin-bottom:6px">Same product, compared across sellers already on Meesho. Verification and ratings are the trust signal.</div>'
+    +p.opts.map(function(o){var sh=SHOPS[o[0]], on=o[0]===cur; return '<div class="opt '+(on?'on':'')+'" data-shop="'+p.id+'" data-sid="'+o[0]+'" style="margin-bottom:6px"><div class="rd"></div><div style="flex-grow:1"><div style="font-size:13px;font-weight:600">'+sh.name+'</div><div class="sh">'+sh.dist+' · delivery by '+fmt(nextRozanaDay())+'</div></div><div style="text-align:right"><b style="font-size:15px">'+money(o[1])+'</b><div class="sav" style="font-size:11px">save '+money(p.mrp-o[1])+'</div></div></div>';}).join('')+'</div>'
+    +'<div class="card p"><div class="row" style="font-size:13px">'+I.truck+'<span>Delivery by <b>'+fmt(nextRozanaDay())+'</b> to 440010 · Valmo</span></div><div class="row" style="font-size:13px">'+I.ret+'<span>One-tap return within 7 days, picked up from your door</span></div><div class="row" style="font-size:13px">'+I.check+'<span>Cash on delivery</span></div></div>'
+    +(alt.length?'<div><b style="font-size:13px">Similar products</b><div class="grid2" style="margin-top:6px">'+alt.map(function(x){return '<div class="pc" style="cursor:pointer" data-open="'+x.id+'"><div class="img" style="height:48px">'+x.tag+'</div><div style="font-size:11px">'+x.name+'</div><div style="font-size:12px;font-weight:700">'+money(price(x))+' <span class="mrp" style="font-weight:400">MRP '+money(x.mrp)+'</span></div></div>';}).join('')+'</div></div>':'')
+    +'</div></div>'
+    +'<div class="foot"><div class="row"><div style="flex-grow:1;font-size:13px">'+(q?'<b>'+q+' in cart</b> from '+SHOPS[cur].name:'Not in cart yet')+'</div>'+stepper(p)+'</div><div class="row"><button class="btn o" data-addlist="'+p.id+'" data-stay="1" style="flex:1">+ My list</button><button class="btn" data-go="checkout" style="flex:1" '+(count()?'':'disabled')+'>Cart · '+money(subtotal())+'</button></div></div>';
+};
+
+V.checkout = function(){
+  var its=items(), l=activeList(), miss=missingFromCart();
+  if(!its.length) return '<div class="hdr"><button class="ib" data-go="home" aria-label="Back">'+I.back+'</button><div class="t">Cart</div></div><div class="body" style="justify-content:center;align-items:center;text-align:center;gap:12px"><div class="img" style="width:96px;height:96px;border-radius:999px">cart</div><div class="h2">Nothing in the cart yet</div><div class="small">Tick items on your list, or browse the shops around you.</div><div class="row" style="gap:8px"><button class="btn s" data-go="lists" style="width:auto;padding:0 18px">My lists</button><button class="btn s o" data-go="shop" style="width:auto;padding:0 18px">Browse</button></div></div>'+nav('shop');
+  var byShop={}; its.forEach(function(x){(byShop[x.shop]=byShop[x.shop]||[]).push(x);});
+  function pay(id,lab,r){return '<div class="pay '+(S.payment===id?'on':'')+'" data-pay="'+id+'"><div class="rd" style="'+(S.payment===id?'background:#9f2089;box-shadow:inset 0 0 0 3px #fff':'')+'"></div><span style="flex-grow:1">'+lab+'</span><span class="sh">'+(r||'')+'</span></div>';}
+  return '<div class="hdr"><button class="ib" data-go="shop" aria-label="Back">'+I.back+'</button><div class="t">'+(S.orders.length?'Your Rozana refill':'Your first Rozana order')+'</div></div>'
+    +'<div class="body">'
+    +(miss.length?'<div class="card" style="border:2px solid #ff9d00;background:#fff6e5"><div class="row" style="gap:6px"><span style="color:#7a4a00">'+I.list+'</span><b style="font-size:13px">On your list, not in the cart</b></div><div class="sh">From "'+l.name+'". Add them now or they wait for next time.</div>'+miss.map(function(i){var p=BY[i.id];return '<div class="row" style="font-size:12px;padding:6px 0;border-top:1px solid #f3dcb3"><span style="flex-grow:1"><b>'+p.name+'</b> · '+money(price(p))+'</span><button class="add" data-add="'+p.id+'">Add</button><button class="ib" style="width:30px;height:30px;border:none" data-untick="'+p.id+'" aria-label="Skip this time">'+I.x+'</button></div>';}).join('')+'</div>':(l?'<div class="ok">'+I.check+'<span>Everything ticked on "'+l.name+'" is in the cart. Nothing forgotten.</span></div>':''))
+    +'<div class="card p"><div class="row" style="font-size:13px">'+I.truck+'<span>Delivery by <b>'+fmt(nextRozanaDay())+'</b> · Valmo · free on your routine basket</span></div><div class="row" style="font-size:13px">'+I.ret+'<span>'+Object.keys(byShop).length+' seller'+(Object.keys(byShop).length>1?'s':'')+' · one-tap return within 7 days</span></div></div>'
+    +Object.keys(byShop).map(function(sid){var sh=SHOPS[sid];return '<div style="border:1px solid #dedede;border-radius:8px;overflow:hidden"><div class="row" style="padding:8px 12px;font-size:12px;background:#fce9f5;border-bottom:1px solid #e3c9db"><b>'+sh.name+'</b><span class="sh">'+sh.dist+'</span><span class="chip" style="margin-left:auto">below MRP</span></div>'
+      +byShop[sid].map(function(x){return '<div class="row" style="padding:8px 12px;border-bottom:1px solid #ededed;font-size:12px"><div class="img" style="width:32px;height:32px;font-size:8px"></div><div style="flex-grow:1"><div>'+x.p.name+'</div><div class="sh">'+money(x.price)+' <span class="mrp">MRP '+money(x.p.mrp)+'</span></div></div>'+stepper(x.p)+'<b style="width:52px;text-align:right">'+money(x.price*x.q)+'</b></div>';}).join('')+'</div>';}).join('')
+    +addonBlock()
+    +'<div class="card" style="font-size:13px;gap:6px"><div class="row" style="justify-content:space-between"><span class="small">Items ('+count()+')</span><span>'+money(subtotal())+'</span></div><div class="row" style="justify-content:space-between"><span class="small">Saved against MRP</span><span class="sav">− '+money(savings())+'</span></div><div class="row" style="justify-content:space-between"><span class="small">Delivery &amp; returns</span><span>Free</span></div><div class="row" style="justify-content:space-between;padding-top:6px;border-top:1px solid #cfcfcf;font-weight:700;font-size:15px"><span>Total</span><span>'+money(subtotal())+'</span></div></div>'
+    +'<div class="card" style="flex-direction:row;align-items:flex-start">'+I.pin+'<div style="flex-grow:1;font-size:12px"><b>Sunil · Home</b><div class="small">[Street], Dharampeth, Nagpur 440010</div></div><span style="font-size:12px;text-decoration:underline">Change</span></div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px"><b style="font-size:13px">Pay with</b>'+pay('cod','Cash on delivery','pay the rider')+pay('upi','UPI','')+pay('card','Card or wallet','')+'</div>'
+    +'</div>'
+    +'<div class="foot"><div class="row" style="justify-content:center;gap:12px;font-size:11px;color:#3d3d3d"><span>Mall verified</span><span>·</span><span>Delivery date shown</span><span>·</span><span>Easy returns</span></div><button class="btn" data-place="1">Place order · '+money(subtotal())+'</button></div>';
+};
+
+V.confirmed = function(){
+  var o=lastOrder(); if(!o) return V.home();
+  return '<div class="hdr">'+logo(40)+'<div class="t">Order placed</div></div>'
+    +'<div class="body" style="align-items:center;text-align:center;justify-content:center;gap:14px">'
+    +'<div style="width:72px;height:72px;border-radius:999px;background:#e8f5ec;color:#1d7a3e;display:flex;align-items:center;justify-content:center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"></path></svg></div>'
+    +'<div style="font-size:20px;font-weight:700">'+(S.orders.length===1?'Your first Rozana order is in':'Refill ordered')+'</div>'
+    +'<div class="small">'+o.id+' · '+o.items.length+' items · '+money(o.total)+' · saved '+money(o.savings)+' vs MRP</div>'
+    +'<div class="card p" style="width:100%;box-sizing:border-box;text-align:left"><div class="row" style="font-size:13px">'+I.truck+'<span>Delivery by <b>'+fmt(o.rozanaDay)+'</b> · Valmo</span></div><div class="row" style="font-size:13px">'+I.shield+'<span>Mall verified items, honest specs, real customer photos</span></div><div class="row" style="font-size:13px">'+I.ret+'<span>One-tap return within 7 days, no questions</span></div></div>'
+    +'<div class="ok" style="width:100%;box-sizing:border-box;text-align:left">'+I.check+'<span>List saved with its cadence. We remind you before anything runs out.</span></div>'
+    +'</div>'
+    +'<div class="foot"><button class="btn" data-go="orders">Track my order</button><button class="btn o" data-go="home">Back to home</button></div>';
+};
+
+V.orders = function(){
+  var o=lastOrder();
+  if(!o) return '<div class="hdr"><button class="ib" data-go="home" aria-label="Back">'+I.back+'</button><div class="t">Orders</div></div><div class="body" style="justify-content:center;align-items:center;text-align:center;gap:12px"><div class="img" style="width:96px;height:96px;border-radius:999px">box</div><div class="h2">No orders yet</div><div class="small">Your Rozana orders will show up here with live tracking and one-tap returns.</div><button class="btn s" data-go="lists" style="width:auto;padding:0 24px">Make my list</button></div>'+nav('orders');
+  var st=status(o);
+  var steps=[['Ordered',fmt(o.placedAt)+' · '+({cod:'Cash on delivery',upi:'UPI',card:'Card'}[o.payment])],['Packed by seller',fmt(o.placedAt+DAY)],['Shipped with Valmo',fmt(o.placedAt+DAY)+' · in transit'],['Out for delivery',fmt(o.rozanaDay)],['Delivered',st===4?fmt(o.deliveredAt)+' · COD collected':'Expected '+fmt(o.rozanaDay)]];
+  var tl=steps.map(function(s,i){var cls=i<st?'':(i===st?'now':'todo');return '<div class="tl"><div class="d"><div class="dot '+cls+'"></div>'+(i<4?'<div class="ln '+(i<st?'':'todo')+'"></div>':'')+'</div><div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px"><div style="font-size:13px;font-weight:700;color:'+(i>st?'#5c5c5c':'#1f1f1f')+'">'+s[0]+'</div><div class="sh">'+s[1]+'</div></div></div>';}).join('');
+  var canReturn=st===4 && daysSince(o)<=7, picked=Object.keys(S.returnPick).filter(function(k){return S.returnPick[k];});
+  var ret;
+  if(o.returned&&o.returned.length) ret='<div class="ok">'+I.check+'<span>Return of '+o.returned.length+' item'+(o.returned.length===1?'':'s')+' accepted · pickup '+fmt(o.returnedAt+DAY)+' · '+money(o.refund)+' back to '+({cod:'your Meesho balance',upi:'UPI',card:'card'}[o.payment])+'</span></div>';
+  else if(canReturn) ret='<div class="card p"><div class="row">'+I.ret+'<b style="font-size:14px">Something wrong? Return in one tap.</b></div><div class="sh" style="line-height:1.45">No questions asked within 7 days. Picked up from your door, refund the same way you paid.</div>'+o.items.map(function(x){return '<label class="row" style="font-size:12px;min-height:32px"><input type="checkbox" data-ret="'+x.id+'" '+(S.returnPick[x.id]?'checked':'')+'>'+BY[x.id].name+(x.q>1?' × '+x.q:'')+'</label>';}).join('')+'<button class="btn o s" data-return="1" '+(picked.length?'':'disabled')+'>Return '+(picked.length?picked.length+' item'+(picked.length===1?'':'s'):'selected items')+'</button></div>';
+  else if(st===4) ret='<div class="note g">'+I.ret+'<span>Return window closed (7 days after delivery)</span></div>';
+  else ret='<div class="note g">'+I.ret+'<span>One-tap return opens once delivered · 7 days, no questions</span></div>';
+  return '<div class="hdr"><button class="ib" data-go="home" aria-label="Back">'+I.back+'</button><div style="flex-grow:1"><div style="font-size:16px;font-weight:700">'+o.id+'</div><div class="sub">'+o.items.length+' items · '+money(o.total)+(S.orders.length>1?' · '+S.orders.length+' orders so far':'')+'</div></div></div>'
+    +'<div class="body">'
+    +'<div class="card p" style="flex-direction:row">'+I.truck+'<div><div style="font-size:14px;font-weight:700">'+(st===4?'Delivered '+fmt(o.deliveredAt):'Arriving by '+fmt(o.rozanaDay))+'</div><div class="sh">'+(st===4?'On the promised date · Valmo':'On track for the promised date · Valmo')+'</div></div></div>'
+    +'<div style="padding:4px 8px">'+tl+'</div>'
+    +'<div class="row" style="gap:8px;flex-wrap:wrap">'+o.items.map(function(x){return '<div class="img" style="width:52px;height:52px">'+BY[x.id].tag+'</div>';}).join('')+'</div>'
+    +ret
+    +'</div>'
+    +'<div class="foot">'+(st===4?'<button class="btn" data-go="account">Manage my routine</button>':'<button class="btn o" data-go="home">Back to home</button>')+'</div>'+nav('orders');
+};
+
+V.account = function(){
+  var o=lastOrder(), l=activeList();
+  return '<div class="hdr"><button class="ib" data-go="home" aria-label="Back">'+I.back+'</button><div class="t">My Rozana routine</div><button class="ib" aria-label="Notifications">'+I.bell+(due()?'<span class="n">1</span>':'')+'</button></div>'
+    +'<div class="body">'
+    +(o? (due()?'<div class="card" style="flex-direction:row;border:2px solid #9f2089">'+I.bell+'<div><div style="font-size:14px;font-weight:700">Running low?</div><div class="sh" style="line-height:1.4">It has been '+daysSince(o)+' days since your last order. Reorder now and it arrives by '+fmt(nextRozanaDay())+'.</div></div></div>':'<div class="note g">'+I.bell+'<span>Delivered '+daysSince(o)+' day'+(daysSince(o)===1?'':'s')+' ago. We nudge you a few days before the list is due.</span></div>')
+        : '<div class="note g">'+I.bell+'<span>Place your first Rozana order and the list becomes a one-tap routine here.</span></div>')
+    +'<div class="card"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Order today, delivered by</b><span class="chip">'+fmt(nextRozanaDay())+'</span></div><div class="sh">Valmo delivery · free on your routine basket · one-tap returns</div></div>'
+    +(l?'<div class="card p"><div class="row" style="justify-content:space-between"><b style="font-size:14px">'+l.name+'</b><span class="chip">'+l.cadence+'</span></div><div class="row" style="gap:6px;flex-wrap:wrap">'+l.items.slice(0,8).map(function(i){return '<span class="chipg">'+BY[i.id].tag+'</span>';}).join('')+'</div><div class="row" style="gap:8px"><button class="btn s o" data-golist="'+l.id+'" style="flex:1">Edit list</button><button class="btn s" data-reorder="1" style="flex:1">Reorder ticked items</button></div></div>':'<button class="btn" data-go="lists">Make my list</button>')
+    +'<div class="h2" style="font-size:13px">Order history</div>'+(S.orders.length?S.orders.slice().reverse().map(function(x){return '<div class="row" style="padding:10px 12px;border:1px solid #dedede;border-radius:8px;font-size:12px;cursor:pointer" data-go="orders">'+I.box+'<span style="flex-grow:1">'+x.id+' · delivered by '+fmt(x.rozanaDay)+' · '+money(x.total)+'</span><span style="text-decoration:underline">View</span></div>';}).join(''):'<div class="sh">No orders yet.</div>')
+    +'<div class="card"><b style="font-size:13px">Why Rozana</b><div class="small">One list, matched to products already on Meesho at prices below MRP, with a reminder before anything runs out. Fewer trips, no guessing at a fair price, and nothing forgotten at checkout.</div></div>'
+    +'</div>'+nav('home');
+};
+
+/* ---------------- shell ---------------- */
+var app=null, toastEl=null, toastT;
+function toast(m){ if(!toastEl) return; toastEl.textContent=m; toastEl.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){toastEl.classList.remove('on');},1600); }
+var STAGES=['New customer','List made','First order','Delivered','Refill due','Repeat customer'];
+var HINTS={home:'Start with a list: tick what the month needs, or photograph the paper list. Everything is matched to products already on Meesho.',lists:'Pick a ready list, make your own, or Snap-a-List. Ticks mark what you buy this time; the rest waits.',list:'Tick or untick items, set weekly or monthly, then add the ticked ones to the cart. The checkout reminds you of anything left behind.',snap:'Upload any photo (or use the sample). Each recognised line gets two or three matching products at Meesho price versus MRP; lines with no match go to "not available".',shop:'Browse by category. Every price is shown against MRP with the seller named.',product:'Compare the same product across sellers. Verification and ratings are the trust signal.',checkout:'The guard shows list items missing from the cart. Items are grouped by seller. Smart add-ons are capped at two.',confirmed:'One list, one cart, delivery date shown before you pay.',orders:'Track the order: packed, shipped with Valmo, delivered. One-tap returns for 7 days.',account:'Lists and cadence live here. The refill nudge appears a few days before the list is due.'};
+function render(){
+  if(!app) return;
+  app.innerHTML=(V[S.screen]||V.home)();
+  var st=stage(), j=document.getElementById('journey'), h=document.getElementById('hint'), v=document.getElementById('visit');
+  if(j) j.innerHTML=STAGES.map(function(s,i){return '<span class="'+(i<st?'done':(i===st?'now':''))+'">'+s+'</span>';}).join('');
+  if(h) h.textContent=HINTS[S.screen]||'';
+  if(v) v.textContent='Visit '+S.visits+(S.orders.length?' · '+S.orders.length+' order'+(S.orders.length===1?'':'s'):'');
+  if(S.snap.stage==='reading'){ var bar=document.getElementById('readbar'); if(bar) setTimeout(function(){bar.style.width='100%';},50); }
+  save();
+}
+function go(id){ S.screen=id; render(); var b=app&&app.querySelector('.body'); if(b) b.scrollTop=0; }
+function bump(id,d){ var b=S.basket[id]||{q:0,shop:best(BY[id])[0]}; b.q=Math.max(0,b.q+d); if(b.q) S.basket[id]=b; else delete S.basket[id]; toast(d>0?'Added '+BY[id].name:'Removed '+BY[id].name); render(); }
+function ensureList(name,cad){ var l=activeList(); if(l) return l; l={id:'L'+Date.now(),name:name||'My Rozana list',cadence:cad||'monthly',items:[]}; S.lists.push(l); S.activeList=l.id; return l; }
+function addToList(l,id,q,on){ var e=l.items.filter(function(i){return i.id===id;})[0]; if(e){ e.on=on!==false; if(q) e.q=q; } else l.items.push({id:id,on:on!==false,q:q||1}); }
+function useStarter(sid){ var s=STARTERS.filter(function(x){return x.id===sid;})[0]; var l={id:'L'+Date.now(),name:s.name,cadence:s.cadence,items:s.items.map(function(id){return {id:id,on:true,q:1};})}; S.lists.push(l); S.activeList=l.id; toast('List created'); go('list'); }
+function reorder(){ var l=activeList(), o=lastOrder(); S.basket={}; if(l&&ticked(l).length) ticked(l).forEach(function(i){S.basket[i.id]={q:i.q||1,shop:best(BY[i.id])[0]};}); else if(o) o.items.forEach(function(x){S.basket[x.id]={q:x.q,shop:x.shop};}); go('checkout'); }
+
+function bind(){
+  app=document.getElementById('app'); toastEl=document.getElementById('toast');
+  document.addEventListener('click',function(e){
+    var t;
+    if((t=e.target.closest('[data-demo]'))){
+      var k=t.getAttribute('data-demo'), o=lastOrder();
+      if(k==='reset'){ S=fresh(); S.visits=1; PHOTO=null; save(); go('home'); toast('Fresh start'); }
+      if(k==='deliver'){ if(o&&!o.delivered){ o.delivered=true; o.deliveredAt=o.rozanaDay+11*3600000; S.offset=Math.max(S.offset||0,o.deliveredAt-Date.now()+3600000); go('orders'); toast('Delivered'); } else toast('No order in transit'); }
+      if(k==='days'){ S.offset=(S.offset||0)+26*DAY; if(o&&!o.delivered){o.delivered=true;o.deliveredAt=o.rozanaDay+11*3600000;} go('home'); toast('26 days later'); }
+      return;
+    }
+    if((t=e.target.closest('[data-inc]'))) return bump(t.getAttribute('data-inc'),1);
+    if((t=e.target.closest('[data-dec]'))) return bump(t.getAttribute('data-dec'),-1);
+    if((t=e.target.closest('[data-add]'))) return bump(t.getAttribute('data-add'),1);
+    if((t=e.target.closest('[data-dismiss]'))){ S.dismissed[t.getAttribute('data-dismiss')]=1; return render(); }
+    if((t=e.target.closest('[data-open]'))){ S.product=t.getAttribute('data-open'); return go('product'); }
+    if((t=e.target.closest('[data-cat]'))){ S.cat=t.getAttribute('data-cat'); return go('shop'); }
+    if((t=e.target.closest('[data-shop]'))){ var id=t.getAttribute('data-shop'); var b=S.basket[id]||{q:1}; b.shop=t.getAttribute('data-sid'); S.basket[id]=b; toast('Filled by '+SHOPS[b.shop].name); return render(); }
+    if((t=e.target.closest('[data-pay]'))){ S.payment=t.getAttribute('data-pay'); return render(); }
+    if((t=e.target.closest('[data-starter]'))) return useStarter(t.getAttribute('data-starter'));
+    if((t=e.target.closest('[data-newlist]'))){ var l={id:'L'+Date.now(),name:'My Rozana list',cadence:'monthly',items:[]}; S.lists.push(l); S.activeList=l.id; return go('list'); }
+    if((t=e.target.closest('[data-golist]'))){ S.activeList=t.getAttribute('data-golist'); return go('list'); }
+    if((t=e.target.closest('[data-rmlist]'))){ var l2=activeList(); var rid=t.getAttribute('data-rmlist'); l2.items=l2.items.filter(function(i){return i.id!==rid;}); return render(); }
+    if((t=e.target.closest('[data-tick]'))){ var l3=activeList(); var it=l3.items.filter(function(i){return i.id===t.getAttribute('data-tick');})[0]; it.on=!it.on; return render(); }
+    if((t=e.target.closest('[data-tickall]'))){ var on=t.getAttribute('data-tickall')==='1'; activeList().items.forEach(function(i){i.on=on;}); return render(); }
+    if((t=e.target.closest('[data-cad]'))){ activeList().cadence=t.getAttribute('data-cad'); return render(); }
+    if((t=e.target.closest('[data-addlist]'))){ var l4=ensureList(); addToList(l4,t.getAttribute('data-addlist'),1,true); toast('Added to '+l4.name); return t.getAttribute('data-stay')?render():render(); }
+    if((t=e.target.closest('[data-untick]'))){ var l5=activeList(); var it2=l5.items.filter(function(i){return i.id===t.getAttribute('data-untick');})[0]; if(it2) it2.on=false; return render(); }
+    if((t=e.target.closest('[data-listtocart]'))){ ticked(activeList()).forEach(function(i){ var b2=S.basket[i.id]||{q:0,shop:best(BY[i.id])[0]}; b2.q=Math.max(b2.q,i.q||1); S.basket[i.id]=b2; }); toast('Ticked items added'); return go('checkout'); }
+    if((t=e.target.closest('[data-sample]'))){ PHOTO=null; S.snap={stage:'reading',lines:[],picks:{}}; render(); setTimeout(function(){ S.snap.stage='lines'; S.snap.lines=SAMPLE_LINES.slice(); render(); },1400); return; }
+    if((t=e.target.closest('[data-read]'))){ S.snap={stage:'reading',lines:[],picks:{}}; render(); setTimeout(function(){ S.snap.stage='lines'; S.snap.lines=SAMPLE_LINES.slice(); render(); },1400); return; }
+    if((t=e.target.closest('[data-retake]'))){ PHOTO=null; S.snap={stage:'idle',lines:[],picks:{}}; return render(); }
+    if((t=e.target.closest('[data-match]'))){ var ta=app.querySelector('[data-lines]'); S.snap.lines=ta.value.split('\n').map(function(x){return x.trim();}).filter(Boolean); S.snap.stage='results'; S.snap.picks={}; return render(); }
+    if((t=e.target.closest('[data-pick]'))){ var line=S.snap.lines.map(matchLine).filter(function(r){return r.options.length;})[parseInt(t.getAttribute('data-pick'),10)].line; S.snap.picks[line]=t.getAttribute('data-sku'); return render(); }
+    if((t=e.target.closest('[data-snapadd]'))){ var l6=ensureList('Snapped list'); var res=S.snap.lines.map(matchLine); res.forEach(function(r){ var id3=S.snap.picks[r.line]; if(!id3) return; addToList(l6,id3,r.qty,true); var b3=S.basket[id3]||{q:0,shop:best(BY[id3])[0]}; b3.q=Math.max(b3.q,r.qty); S.basket[id3]=b3; }); S.snap={stage:'idle',lines:[],picks:{}}; PHOTO=null; toast('Added to '+l6.name+' and cart'); return go('checkout'); }
+    if((t=e.target.closest('[data-ret]'))){ S.returnPick[t.getAttribute('data-ret')]=t.checked; return render(); }
+    if((t=e.target.closest('[data-return]'))){ var o2=lastOrder(), ids=Object.keys(S.returnPick).filter(function(k){return S.returnPick[k];}); o2.returned=ids; o2.returnedAt=now(); o2.refund=ids.reduce(function(a,id){var x=o2.items.filter(function(y){return y.id===id;})[0];return a+(x?x.price*x.q:0);},0); S.returnPick={}; render(); return toast('Return accepted. Rider collects on the next route.'); }
+    if((t=e.target.closest('[data-reorder]'))) return reorder();
+    if((t=e.target.closest('[data-place]'))){
+      if(!count()) return;
+      var its=items().map(function(x){return {id:x.p.id,q:x.q,shop:x.shop,price:x.price};});
+      var ord={id:'RZ'+String(1000+S.orders.length+1), items:its, shops:shopsInCart(), subtotal:subtotal(), savings:savings(), total:subtotal(), payment:S.payment, placedAt:now(), rozanaDay:nextRozanaDay(), delivered:false};
+      S.orders.push(ord); S.basket={}; S.returnPick={}; S.dismissed={};
+      return go('confirmed');
+    }
+    if((t=e.target.closest('[data-go]'))){ e.preventDefault(); return go(t.getAttribute('data-go')); }
+  });
+  document.addEventListener('change',function(e){
+    var t=e.target;
+    if(t.matches('[data-photo]') && t.files && t.files[0]){ var r=new FileReader(); r.onload=function(){ PHOTO=r.result; S.snap.stage='photo'; render(); }; r.readAsDataURL(t.files[0]); }
+    if(t.matches('[data-rename]')){ activeList().name=t.value.trim()||'My Rozana list'; save(); }
+  });
+  render();
+}
+global.ROZANA={V:V, setState:function(s){S=s;}, getState:function(){return S;}, fresh:fresh, STARTERS:STARTERS, CATALOG:CATALOG, matchLine:matchLine, SAMPLE_LINES:SAMPLE_LINES, bind:bind, best:best};
+if(global.document && document.getElementById && document.getElementById('app')) bind();
+})(typeof window!=='undefined'?window:globalThis);
+
+</script>
+</body>
+</html>
